@@ -1,9 +1,6 @@
 module.exports = (globalJSON, content, withOutMenu) => {
     const fs = require('fs');
     const renderMenu = require('./renderMenu.js');
-    const ssi = require('ssi');
-    const baseDir = './src/06-components';
-    const ssiParser = new ssi(baseDir, baseDir, '/**/*.html');
 
     if (! globalJSON) {
         globalJSON = JSON.parse(fs.readFileSync('./docs/globalJSON.json', 'utf8'));
@@ -11,8 +8,7 @@ module.exports = (globalJSON, content, withOutMenu) => {
 
     if (! content) {
         const wrap = (el) => {
-            let html = el.html ? `<div class="sample">${JSON.parse(el.html)}</div>` : '';
-            html = ssiParser.parse('', html).contents;
+            const html = el.html ? `<div class="sample">${JSON.parse(el.html)}</div>` : '';
 
             const sample = (type, content) => {
                 return `
@@ -30,7 +26,7 @@ module.exports = (globalJSON, content, withOutMenu) => {
                 `;
             };
 
-            const codeSample = el.codeExample ? sample('code', JSON.parse(el.codeExample)) : '';
+            let codeSample = el.codeExample ? sample('code', JSON.parse(el.codeExample)) : '';
             const jsSample = el.jsExample ? sample('js', JSON.parse(el.jsExample)) : '';
 
             return `
