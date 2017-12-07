@@ -6,10 +6,12 @@ var renderer = new marked.Renderer();
 renderer.heading = (text, level) => {
     return `<h${level}>${text}</h${level}>`;
 };
+
 const ssi = require('ssi');
 const baseDir = './src/06-components';
 const ssiParser = new ssi(baseDir, baseDir, '/**/*.html');
 const entities = require('html-entities').AllHtmlEntities;
+
 const docsData = JSON.parse(fs.readFileSync('./docs/docsData.json', 'utf8'));
 
 const getFiles = (route, name, routesArr) => {
@@ -46,8 +48,7 @@ const setObj = (type, files) => {
 
             const htmlPaths = paths.split('.md')[0] + '.html';
             if (fs.existsSync(htmlPaths)) {
-                const html = ssiParser.parse('', fs.readFileSync(htmlPaths, 'utf8')).contents;
-                
+                const html = ssiParser.parse('', fs.readFileSync(htmlPaths, 'utf8')).contents;           
                 element.html = JSON.stringify(html);
                 element.codeExample = JSON.stringify(entities.encode(html));
             }

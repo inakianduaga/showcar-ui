@@ -1,7 +1,6 @@
 module.exports = (globalJSON, content, withOutMenu) => {
     const fs = require('fs');
     const renderMenu = require('./renderMenu.js');
-
     if (! globalJSON) {
         globalJSON = JSON.parse(fs.readFileSync('./docs/globalJSON.json', 'utf8'));
     }
@@ -26,7 +25,7 @@ module.exports = (globalJSON, content, withOutMenu) => {
                 `;
             };
 
-            let codeSample = el.codeExample ? sample('code', JSON.parse(el.codeExample)) : '';
+            const codeSample = el.codeExample ? sample('code', JSON.parse(el.codeExample)) : '';
             const jsSample = el.jsExample ? sample('js', JSON.parse(el.jsExample)) : '';
 
             return `
