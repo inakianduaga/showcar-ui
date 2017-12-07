@@ -1,13 +1,19 @@
 module.exports = (globalJSON, content, withOutMenu) => {
     const fs = require('fs');
     const renderMenu = require('./renderMenu.js');
+    const ssi = require('ssi');
+    const baseDir = './src/06-components';
+    let ssiParser;
+
+    ssiParser = new ssi(baseDir, baseDir, '/**/*.html');console.log('lakha', ssiParser);
     if (! globalJSON) {
         globalJSON = JSON.parse(fs.readFileSync('./docs/globalJSON.json', 'utf8'));
     }
 
     if (! content) {
         const wrap = (el) => {
-            const html = el.html ? `<div class="sample">${JSON.parse(el.html)}</div>` : '';
+            let html = el.html ? `<div class="sample">${JSON.parse(el.html)}</div>` : '';
+            html = ssiParser.parse('', html).contents;
 
             const sample = (type, content) => {
                 return `
