@@ -41,7 +41,6 @@
     "dom4": "^1.8.5",
     "es6-collections": "^0.5.6",
     "lazysizes": "^3.0.0",
-    "node-ssi": "^0.3.2",
     "promiz": "^1.0.5",
     "showcar-carousel": "^4.3.4",
     "showcar-icons": " ^0.6.0",

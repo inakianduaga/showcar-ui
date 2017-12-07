@@ -3,9 +3,8 @@ module.exports = (globalJSON, content, withOutMenu) => {
     const renderMenu = require('./renderMenu.js');
     const ssi = require('ssi');
     const baseDir = './src/06-components';
-    let ssiParser;
+    const ssiParser = new ssi(baseDir, baseDir, '/**/*.html');
 
-    ssiParser = new ssi(baseDir, baseDir, '/**/*.html');console.log('lakha', ssiParser);
     if (! globalJSON) {
         globalJSON = JSON.parse(fs.readFileSync('./docs/globalJSON.json', 'utf8'));
     }
