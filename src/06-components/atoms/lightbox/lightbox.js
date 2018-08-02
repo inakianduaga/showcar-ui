@@ -1,8 +1,10 @@
 import registerElement from '../../../07-utilities/helpers.js';
 
-export default function (tagName) {
-    function attachedCallback() {
+export default function(tagName) {
+    const onOpenCallbacks = [];
+    const onCloseCallbacks = [];
 
+    function attachedCallback() {
         let lb = {
             parent: this.parentElement,
             container: this.querySelector('.sc-lightbox__container'),
@@ -16,16 +18,19 @@ export default function (tagName) {
         const openElements = Array.from(document.querySelectorAll('[data-lightbox-open="' + id + '"]'));
 
         openElements.forEach(el => {
-            el.addEventListener('click', () => show(lb,el), false);
+            el.addEventListener('click', () => show(lb, el), false);
         });
 
         lb.close.forEach(el => {
-            el.addEventListener('click', (e) => hide(lb, e), false);
+            el.addEventListener('click', e => hide(lb, e), false);
         });
     }
 
     const show = (lb, opener) => {
-        if (opener.hasAttribute('data-lightbox-prevent-open') && opener.getAttribute('data-lightbox-prevent-open') == 'true') {
+        if (
+            opener.hasAttribute('data-lightbox-prevent-open') &&
+            opener.getAttribute('data-lightbox-prevent-open') == 'true'
+        ) {
             return;
         }
         lb.overlay = document.createElement('div');
@@ -46,7 +51,7 @@ export default function (tagName) {
         lb.container.classList.add('sc-lightbox__container--visible');
 
         if (lb.preventOutsideClose === null) {
-            lb.overlay.addEventListener('click', (e) => hide(lb, e), false);
+            lb.overlay.addEventListener('click', e => hide(lb, e), false);
             document.addEventListener('keydown', e => {
                 if (e.keyCode === 27) hide(lb, e);
             });
@@ -57,6 +62,8 @@ export default function (tagName) {
         setTimeout(() => {
             lb.overlay.classList.add('sc-lightbox--fadein');
         }, 20);
+
+        onOpenCallbacks.forEach(cb => cb());
     };
 
     const hide = (lb, e) => {
@@ -68,17 +75,25 @@ export default function (tagName) {
             e.preventDefault();
             lb.container.classList.remove('sc-lightbox__container--visible');
             lb.parent.appendChild(lb.container);
-            if(lb.overlay) {
+            if (lb.overlay) {
                 lb.overlay.classList.remove('sc-lightbox--fadein');
                 setTimeout(() => {
                     lb.overlay.remove();
                 }, 250);
             }
+
+            onCloseCallbacks.forEach(cb => cb());
         }
     };
 
+    const registerOnOpenCallback = cb => onOpenCallbacks.push(cb);
+
+    const registerOnCloseCallback = cb => onCloseCallbacks.push(cb);
+
     registerElement({
         attachedCallback,
-        tagName
+        tagName,
+        registerOnOpenCallback,
+        registerOnCloseCallback
     });
 }
